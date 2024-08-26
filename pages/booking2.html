@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summer House Booking</title>
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        .booking-form {
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .submit-btn:hover {
+            background-color: #0056b3;
+        }
+        .booked-date {
+            background-color: #ffcccc !important;
+        }
+    </style>
+</head>
+<body>
+
+<div class="booking-form">
+    <h2>Summer House Booking</h2>
+    <form>
+        <div class="form-group">
+            <label for="checkin">Check-in Date and Time:</label>
+            <input type="text" id="checkin" name="checkin">
+        </div>
+        <div class="form-group">
+            <label for="checkout">Check-out Date and Time:</label>
+            <input type="text" id="checkout" name="checkout">
+        </div>
+        <button type="submit" class="submit-btn">Book Now</button>
+    </form>
+</div>
+
+<!-- Flatpickr JS -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+    // Dummy booked dates
+    const bookedDates = [
+        '2024-09-01',
+        '2024-09-02',
+        '2024-09-15'
+    ];
+
+    // Function to check if a date is booked
+    function isDateBooked(date) {
+        return bookedDates.includes(date.toISOString().split('T')[0]);
+    }
+
+    // Initialize Flatpickr for check-in and check-out fields
+    flatpickr("#checkin", {
+        enableTime: true,
+        dateFormat: "Y-m-d H:i",
+        onDayCreate: function(dObj, dStr, fp, dayElem) {
+            if (isDateBooked(dayElem.dateObj)) {
+                dayElem.classList.add("booked-date");
+            }
+        }
+    });
+
+    flatpickr("#checkout", {
+        enableTime: true,
+        dateFormat: "Y-m-d H:i",
+        onDayCreate: function(dObj, dStr, fp, dayElem) {
+            if (isDateBooked(dayElem.dateObj)) {
+                dayElem.classList.add("booked-date");
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
