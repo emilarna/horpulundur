@@ -9,6 +9,43 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
     <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            /* Full viewport height */
+            overflow: hidden;
+            /* Prevent scrollbars */
+            position: relative;
+            background: url('images/horp.jpg') no-repeat center center fixed;
+            background-size: cover;
+            /* Cover the entire viewport */
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.5);
+            /* White overlay with 50% opacity */
+            z-index: -1;
+            /* Ensure it's behind all other content */
+        }
+
+        /* Example content styling to ensure visibility */
+        .content {
+            position: relative;
+            z-index: 1;
+            /* Ensure content is above the overlay */
+            color: #000;
+            /* Text color for visibility */
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+
         .booking-form {
             max-width: 400px;
             margin: auto;
@@ -55,25 +92,34 @@
 </head>
 
 <body>
-    <header>
-        <a href="index.html">Heim</a>
-    </header>
-    <h1>Hér getur þú bókað sumarbústaðinn</h1>
+    <div class="content">
 
-    <div class="booking-form">
-        <h3>Bóka</h3>
-        <form action="" id="booking-form">
-            <div class="form-group">
-                <input type="text" name="checkin" id="checkin">
+        <header>
+            <a href="index.html">Heim</a>
+        </header>
+        <h1>Hér getur þú bókað sumarbústaðinn</h1>
 
-            </div>
-            <div class="form-group">
-                <form action="">
-                    <input type="text" id="checkout" name="checkout">
-                </form>
-                <button type="submit">Leita</button>
-            </div>
-        </form>
+        <div class="booking-form">
+            <h3>Bóka</h3>
+            <form action="" id="booking-form">
+                <div class="form-group">
+                    <label for="checkin">Check in</label>
+                    <input type="text" name="checkin" id="checkin">
+
+                </div>
+                <div class="form-group">
+                    <form action="">
+                        <label for="checkout">Check out</label>
+                        <input type="text" id="checkout" name="checkout">
+                    </form>
+                    <button type="submit">Leita</button>
+                </div>
+            </form>
+            <h6 id="availability-message"></h6>
+
+            
+
+        </div>
 
     </div>
     <!-- Flatpickr JS -->
@@ -92,6 +138,10 @@
 
                 console.log("available");
                 console.log(checkinValue)
+                document.getElementById('availability-message').textContent = 'Good dates!';
+
+
+
             } else {
                 console.log("Please fill both dates.");
             }
