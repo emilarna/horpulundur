@@ -12,22 +12,48 @@ function isDateBooked(date) {
 const bookings = [
     { id: 1, checkinDate: '2024-09-01', checkoutDate: '2024-09-05', customerName: 'Emil Árnason' },
     { id: 2, checkinDate: '2024-09-07', checkoutDate: '2024-09-10', customerName: 'Gústaf Jónsson' },
-    { id: 3, checkinDate: '2024-09-12', checkoutDate: '2024-09-15', customerName: 'Árni Gústafsson' }
+    { id: 3, checkinDate: '2024-09-12', checkoutDate: '2024-09-15', customerName: 'Árni Gústafsson' },
+    { id: 4, checkinDate: '2024-10-12', checkoutDate: '2024-10-15', customerName: 'Árni Gústafsson' },
+
 ];
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Function to check if a date is booked
 function isDateBooked(date) {
     return bookings.some(booking => {
         const bookedCheckin = new Date(booking.checkinDate);
         const bookedCheckout = new Date(booking.checkoutDate);
-        return date >= bookedCheckin && date < bookedCheckout; // Compare date ranges
+        return date >= bookedCheckin && date <= bookedCheckout; // Compare date ranges
     });
 }
+
+function getDisabledDates(bookings) {
+    return bookings.map(booking => ({
+        from: booking.checkinDate,
+        to: booking.checkoutDate
+    }));
+}
+
+const disable = []
+
+const disabledDates = [...disable,...getDisabledDates(bookings)];
 
 // Initialize Flatpickr for check-in and check-out fields
 flatpickr("#checkin", {
     enableTime: false,
     dateFormat: "Y-m-d",
+    disable: disabledDates,
     onDayCreate: function (dObj, dStr, fp, dayElem) {
         const date = dayElem.dateObj;
         if (isDateBooked(date)) {
@@ -39,16 +65,7 @@ flatpickr("#checkin", {
 flatpickr("#checkout", {
     enableTime: false,
     dateFormat: "Y-m-d",
-    disable: [
-        {
-            from: "2024-09-01",
-            to: "2024-09-04"
-        },
-        {
-            from: "2025-09-01",
-            to: "2025-12-01"
-        }
-    ],
+    disable: disabledDates,
     onDayCreate: function (dObj, dStr, fp, dayElem) {
         const date = dayElem.dateObj;
         if (isDateBooked(date)) {
@@ -75,6 +92,9 @@ function handleFormSubmit(event) {
         return;
     }
 
+
+
+
     // Check availability
     const isAvailable = !bookings.some(booking => {
         const bookedCheckin = new Date(booking.checkinDate);
@@ -82,11 +102,18 @@ function handleFormSubmit(event) {
         return (checkinValue < bookedCheckout && checkoutValue > bookedCheckin);
     });
 
+
+
+
+
     // Update the availability message
     const messageElement = document.getElementById('availability-message');
     if (isAvailable) {
         messageElement.textContent = 'The selected dates are available!';
         messageElement.style.color = 'green';
+        confirmButtonElement = document.getElementById('confirm-button');
+        confirmButtonElement.textContent = "Staðfesta bókun"
+        confirmButtonElement.style.display = "block"
     } else {
         messageElement.textContent = 'The selected dates are not available.';
         messageElement.style.color = 'red';
