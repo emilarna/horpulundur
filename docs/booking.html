@@ -17,7 +17,7 @@
             overflow: hidden;
             /* Prevent scrollbars */
             position: relative;
-            background: url('images/horp.jpg') no-repeat center center fixed;
+            background: url('static/images/horp.jpg') no-repeat center center fixed;
             background-size: cover;
             /* Cover the entire viewport */
         }
@@ -96,6 +96,8 @@
 
         <header>
             <a href="index.html">Heim</a>
+            <a href="all_bookings.html">Allar bókanir</a>
+            <a href="my_bookings.html">Mínar bókanir</a>
         </header>
         <h1>Hér getur þú bókað sumarbústaðinn</h1>
 
@@ -117,8 +119,6 @@
             </form>
             <h6 id="availability-message"></h6>
 
-            
-
         </div>
 
     </div>
@@ -126,40 +126,8 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
 
-        function handleFormSubmit(event) {
-            event.preventDefault(); // Prevents the form from submitting in the traditional way
-
-            // Get the values of check-in and check-out
-            const checkinValue = document.getElementById('checkin').value;
-            const checkoutValue = document.getElementById('checkout').value;
-
-            // Check if both dates are filled
-            if (checkinValue && checkoutValue) {
-
-                console.log("availaaaaable");
-                console.log(checkinValue)
-                document.getElementById('availability-message').textContent = 'Good dates!';
 
 
-
-            } else {
-                console.log("Please fill both dates.");
-            }
-        }
-
-        document.getElementById('booking-form').addEventListener('submit', handleFormSubmit);
-
-
-
-        // Dummy booked dates
-        const bookedDates = [
-            '2024-09-01',
-            '2024-09-02',
-            '2024-09-15',
-            '2024-09-03',
-            '2024-09-04',
-            '2024-09-05',
-        ];
 
 
 
@@ -168,13 +136,30 @@
             return bookedDates.includes(date.toISOString().split('T')[0]);
         }
 
+        // Dummy booking data
+        const bookings = [
+            { id: 1, checkinDate: '2024-09-01', checkoutDate: '2024-09-05', customerName: 'Emil Árnason' },
+            { id: 2, checkinDate: '2024-09-07', checkoutDate: '2024-09-10', customerName: 'Gústaf Jónsson' },
+            { id: 3, checkinDate: '2024-09-12', checkoutDate: '2024-09-15', customerName: 'Árni Gústafsson' }
+        ];
+
+        // Function to check if a date is booked
+        function isDateBooked(date) {
+            return bookings.some(booking => {
+                const bookedCheckin = new Date(booking.checkinDate);
+                const bookedCheckout = new Date(booking.checkoutDate);
+                return date >= bookedCheckin && date < bookedCheckout; // Compare date ranges
+            });
+        }
+
         // Initialize Flatpickr for check-in and check-out fields
         flatpickr("#checkin", {
             enableTime: false,
             dateFormat: "Y-m-d",
             onDayCreate: function (dObj, dStr, fp, dayElem) {
-                if (isDateBooked(dayElem.dateObj)) {
-                    dayElem.classList.add("booked-date");
+                const date = dayElem.dateObj;
+                if (isDateBooked(date)) {
+                    dayElem.classList.add("booked-date"); // Add class to booked dates
                 }
             }
         });
@@ -183,11 +168,49 @@
             enableTime: false,
             dateFormat: "Y-m-d",
             onDayCreate: function (dObj, dStr, fp, dayElem) {
-                if (isDateBooked(dayElem.dateObj)) {
-                    dayElem.classList.add("booked-date");
+                const date = dayElem.dateObj;
+                if (isDateBooked(date)) {
+                    dayElem.classList.add("booked-date"); // Add class to booked dates
                 }
             }
         });
+
+        // Function to handle form submission
+        function handleFormSubmit(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Get the values of check-in and check-out
+            const checkinValue = new Date(document.getElementById('checkin').value);
+            const checkoutValue = new Date(document.getElementById('checkout').value);
+
+            // Validate input
+            if (!checkinValue || !checkoutValue || checkinValue >= checkoutValue) {
+                document.getElementById('availability-message').textContent = 'Please enter valid check-in and check-out dates.';
+                document.getElementById('availability-message').style.color = 'gold';
+
+                return;
+            }
+
+            // Check availability
+            const isAvailable = !bookings.some(booking => {
+                const bookedCheckin = new Date(booking.checkinDate);
+                const bookedCheckout = new Date(booking.checkoutDate);
+                return (checkinValue < bookedCheckout && checkoutValue > bookedCheckin);
+            });
+
+            // Update the availability message
+            const messageElement = document.getElementById('availability-message');
+            if (isAvailable) {
+                messageElement.textContent = 'The selected dates are available!';
+                messageElement.style.color = 'green';
+            } else {
+                messageElement.textContent = 'The selected dates are not available.';
+                messageElement.style.color = 'red';
+            }
+        }
+
+        // Attach the event listener to the form
+        document.getElementById('booking-form').addEventListener('submit', handleFormSubmit);
     </script>
 </body>
 
