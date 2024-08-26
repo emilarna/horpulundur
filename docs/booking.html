@@ -155,7 +155,10 @@
         const bookedDates = [
             '2024-09-01',
             '2024-09-02',
-            '2024-09-15'
+            '2024-09-15',
+            '2024-09-03',
+            '2024-09-04',
+            '2024-09-05',
         ];
 
 
@@ -167,8 +170,8 @@
 
         // Initialize Flatpickr for check-in and check-out fields
         flatpickr("#checkin", {
-            enableTime: true,
-            dateFormat: "Y-m-d H:i",
+            enableTime: false,
+            dateFormat: "Y-m-d",
             onDayCreate: function (dObj, dStr, fp, dayElem) {
                 if (isDateBooked(dayElem.dateObj)) {
                     dayElem.classList.add("booked-date");
@@ -177,8 +180,8 @@
         });
 
         flatpickr("#checkout", {
-            enableTime: true,
-            dateFormat: "Y-m-d H:i",
+            enableTime: false,
+            dateFormat: "Y-m-d",
             onDayCreate: function (dObj, dStr, fp, dayElem) {
                 if (isDateBooked(dayElem.dateObj)) {
                     dayElem.classList.add("booked-date");

@@ -3,24 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Summer House Booking</title>
-    <!-- Flatpickr CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <title>Booking Availability Checker</title>
     <style>
-        .booking-form {
-            max-width: 400px;
-            margin: auto;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            background-color: #f9f9f9;
-        }
         .form-group {
             margin-bottom: 15px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
         }
         .form-group input {
             width: 100%;
@@ -33,69 +19,82 @@
             background-color: #007bff;
             color: white;
             border: none;
-            border-radius: 5px;
             cursor: pointer;
         }
         .submit-btn:hover {
             background-color: #0056b3;
         }
-        .booked-date {
-            background-color: #ffcccc !important;
+        #availability-message {
+            margin-top: 20px;
+            font-size: 18px;
         }
     </style>
 </head>
 <body>
 
-<div class="booking-form">
-    <h2>Summer House Booking</h2>
-    <form>
-        <div class="form-group">
-            <label for="checkin">Check-in Date and Time:</label>
-            <input type="text" id="checkin" name="checkin">
-        </div>
-        <div class="form-group">
-            <label for="checkout">Check-out Date and Time:</label>
-            <input type="text" id="checkout" name="checkout">
-        </div>
-        <button type="submit" class="submit-btn">Book Now</button>
-    </form>
-</div>
+<form id="booking-form">
+    <div class="form-group">
+        <label for="checkin">Check-in Date:</label>
+        <input type="date" name="checkin" id="checkin"  min="2024-08-26" max="2025-08-30">
+    </div>
+    <div class="form-group">
+        <label for="checkout">Check-out Date:</label>
+        <input type="date" id="checkout" name="checkout" min="2024-08-26" max="2025-08-30">
+    </div>
+    <button type="submit" class="submit-btn">Check Availability</button>
+</form>
 
-<!-- Flatpickr JS -->
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<div id="availability-message"></div>
+
 <script>
-    // Dummy booked dates
-    const bookedDates = [
-        '2024-09-01',
-        '2024-09-02',
-        '2024-09-15'
+    // Dummy booking data
+    const bookings = [
+        { id: 1, checkinDate: '2024-09-01', checkoutDate: '2024-09-05', customerName: 'Emil Árnason' },
+        { id: 2, checkinDate: '2024-09-07', checkoutDate: '2024-09-10', customerName: 'Gústaf Jónsson' },
+        { id: 3, checkinDate: '2024-09-12', checkoutDate: '2024-09-15', customerName: 'Árni Gústafsson' }
     ];
 
-    // Function to check if a date is booked
-    function isDateBooked(date) {
-        return bookedDates.includes(date.toISOString().split('T')[0]);
+    // Function to check if the selected dates are available
+    function checkAvailability(checkin, checkout) {
+        return !bookings.some(booking => {
+            const bookedCheckin = new Date(booking.checkinDate);
+            const bookedCheckout = new Date(booking.checkoutDate);
+
+            // Check for overlapping dates
+            return (checkin < bookedCheckout && checkout > bookedCheckin);
+        });
     }
 
-    // Initialize Flatpickr for check-in and check-out fields
-    flatpickr("#checkin", {
-        enableTime: true,
-        dateFormat: "Y-m-d H:i",
-        onDayCreate: function(dObj, dStr, fp, dayElem) {
-            if (isDateBooked(dayElem.dateObj)) {
-                dayElem.classList.add("booked-date");
-            }
-        }
-    });
+    // Function to handle form submission
+    function handleFormSubmit(event) {
+        event.preventDefault(); // Prevent default form submission
 
-    flatpickr("#checkout", {
-        enableTime: true,
-        dateFormat: "Y-m-d H:i",
-        onDayCreate: function(dObj, dStr, fp, dayElem) {
-            if (isDateBooked(dayElem.dateObj)) {
-                dayElem.classList.add("booked-date");
-            }
+        // Get the values of check-in and check-out
+        const checkinValue = new Date(document.getElementById('checkin').value);
+        const checkoutValue = new Date(document.getElementById('checkout').value);
+
+        // Validate input
+        if (!checkinValue || !checkoutValue || checkinValue >= checkoutValue) {
+            document.getElementById('availability-message').textContent = 'Please enter valid check-in and check-out dates.';
+            return;
         }
-    });
+
+        // Check availability
+        const isAvailable = checkAvailability(checkinValue, checkoutValue);
+
+        // Update the availability message
+        const messageElement = document.getElementById('availability-message');
+        if (isAvailable) {
+            messageElement.textContent = 'The selected dates are available!';
+            messageElement.style.color = 'green';
+        } else {
+            messageElement.textContent = 'The selected dates are not available.';
+            messageElement.style.color = 'red';
+        }
+    }
+
+    // Attach the event listener to the form
+    document.getElementById('booking-form').addEventListener('submit', handleFormSubmit);
 </script>
 
 </body>
