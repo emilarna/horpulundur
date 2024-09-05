@@ -4,9 +4,49 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="static/styles.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Apply a gradient background to table rows */
+        .table-light {
+            opacity: 0.85;
+            
+        }
+
+    </style>
+
+    
     <title>Bókanir</title>
 </head>
 <body>
-    
+    <div class="content">
+        <header>
+            <ul>
+                <li><a href="index.html">Heim</a></li>
+                <li><a href="all_bookings.html">Allar bókanir</a></li>
+                <li><a href="my_bookings.html">Mínar bókanir</a></li>
+            </ul>
+        </header>
+    <h1 class="mb-4">Allar Bókanir</h1>
+
+
+        <!-- Table to display bookings -->
+        <table id="bookingsTable" class="table table-light">
+            <thead class="table-dark">
+                <tr>
+                    <th>Bókun Nr.</th>
+                    <th>Customer Name</th>
+                    <th>Check-in Date</th>
+                    <th>Check-out Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Booking rows will be populated here -->
+            </tbody>
+        </table>
+
+    </div>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="static/all_bookings.js"></script>
 </html>
